@@ -1,4 +1,10 @@
 {
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
   "ColorDiffuse": {
     "b": 0,
     "g": 0,
@@ -11,20 +17,35 @@
     "PDFUrl": "https://steamusercontent-a.akamaihd.net/ugc/10368063059244387072/3C54F65273BF646DDBD073F1F287A2E7FDD29A60/"
   },
   "Description": "Comprehensive collection of rulings (Chapter 2) - Version 1.1 (July 2026)",
+  "DragSelectable": true,
   "GMNotes": "{\n  \"id\": \"Grimoire\"\n}",
   "GUID": "grim",
+  "Grid": true,
+  "GridProjection": false,
   "Hands": false,
   "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
   "Locked": true,
+  "LuaScript": "",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
   "Name": "Custom_PDF",
   "Nickname": "Grimoire",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
   "Transform": {
     "posX": -62,
     "posY": 1.481,
     "posZ": 71,
+    "rotX": 0,
     "rotY": 270,
+    "rotZ": 0,
     "scaleX": 4.5,
     "scaleY": 1,
     "scaleZ": 4.5
-  }
+  },
+  "Value": 0,
+  "XmlUI": ""
 }

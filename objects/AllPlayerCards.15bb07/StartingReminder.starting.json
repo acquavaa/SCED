@@ -1,4 +1,10 @@
 {
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "Autoraise": true,
   "CardID": 12300,
   "CustomDeck": {
     "123": {
@@ -7,25 +13,44 @@
       "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/11082785522162145609/6E9361757858A30C00DE7E4535DFD3F7678E9304/",
       "NumHeight": 1,
       "NumWidth": 1,
-      "Type": 0
+      "Type": 0,
+      "UniqueBack": false
     }
   },
+  "Description": "",
+  "DragSelectable": true,
   "GMNotes_path": "AllPlayerCards.15bb07/StartingReminder.starting.gmnotes",
   "GUID": "starting",
+  "Grid": true,
+  "GridProjection": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
   "LuaScript": "require(\"playercards/cards/StartingReminder\")",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
   "Name": "Card",
   "Nickname": "Starting Reminder",
+  "Snap": true,
+  "Sticky": true,
   "Tags": [
     "Asset",
     "PlayerCard",
     "CardWithHelper",
     "i18n_XML"
   ],
+  "Tooltip": true,
   "Transform": {
+    "posX": 0,
+    "posY": 0,
+    "posZ": 0,
+    "rotX": 0,
     "rotY": 270,
+    "rotZ": 0,
     "scaleX": 1,
     "scaleY": 1,
     "scaleZ": 1
   },
-  "XmlUI": "<Include src=\"playercards/StartingReminder.xml\"/>"
+  "Value": 0,
+  "XmlUI": "\u003cInclude src=\"playercards/StartingReminder.xml\"/\u003e"
 }

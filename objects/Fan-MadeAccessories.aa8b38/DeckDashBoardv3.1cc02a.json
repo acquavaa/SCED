@@ -1,4 +1,9 @@
 {
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
   "AttachedSnapPoints": [
     {
       "Position": {
@@ -344,6 +349,7 @@
       }
     }
   ],
+  "Autoraise": true,
   "ColorDiffuse": {
     "b": 1,
     "g": 1,
@@ -362,16 +368,35 @@
     "WidthScale": 0
   },
   "Description": "Helps keep your deck and table clean and organized.\n\r\nTips: For a smoother deckbuilding experience, use it with \"picture in picture\".\n\nby Rollingsnake",
+  "DragSelectable": true,
+  "GMNotes": "",
   "GUID": "1cc02a",
+  "Grid": true,
+  "GridProjection": false,
   "Hands": false,
   "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
   "LuaScript": "require(\"accessories/DeckDashBoard\")",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Deck DashBoard v3",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
   "Transform": {
+    "posX": 0,
+    "posY": 0,
+    "posZ": 0,
+    "rotX": 0,
     "rotY": 270,
+    "rotZ": 0,
     "scaleX": 9.52,
     "scaleY": 1,
     "scaleZ": 9.52
-  }
+  },
+  "Value": 0,
+  "XmlUI": ""
 }

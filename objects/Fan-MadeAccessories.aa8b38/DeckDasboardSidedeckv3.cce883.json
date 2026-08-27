@@ -1,4 +1,9 @@
 {
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
   "AttachedSnapPoints": [
     {
       "Position": {
@@ -141,6 +146,7 @@
       }
     }
   ],
+  "Autoraise": true,
   "ColorDiffuse": {
     "b": 1,
     "g": 1,
@@ -159,16 +165,35 @@
     "WidthScale": 0
   },
   "Description": "A side deck for Deck Dashboard v3\nDesigned for extra deck (eg: parallel Jim Culver) / Candidate upgrade card / Bonded card\n\nTip: Myriad/Exceptional/Custom Card XP cant be auto-count",
+  "DragSelectable": true,
+  "GMNotes": "",
   "GUID": "cce883",
+  "Grid": true,
+  "GridProjection": false,
   "Hands": false,
   "HideWhenFaceDown": false,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
   "LuaScript": "require(\"accessories/DeckDashBoard-Sidedeck\")",
+  "LuaScriptState": "",
+  "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Deck Dasboard Sidedeck v3",
+  "Snap": true,
+  "Sticky": true,
+  "Tooltip": true,
   "Transform": {
+    "posX": 0,
+    "posY": 0,
+    "posZ": 0,
+    "rotX": 0,
     "rotY": 270,
+    "rotZ": 0,
     "scaleX": 4.2,
     "scaleY": 1,
     "scaleZ": 4.2
-  }
+  },
+  "Value": 0,
+  "XmlUI": ""
 }

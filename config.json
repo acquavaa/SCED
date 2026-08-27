@@ -229,7 +229,8 @@
     "TheDrownedCity.938aab",
     "FilmFatale.45e513",
     "Core2026BrethrenofAsh.elokoss",
-    "ChildrenofBlood.63b531"
+    "ChildrenofBlood.63b531",
+    "CustomizableCardSearcher.8c1b75"
   ],
   "PlayArea": 1,
   "SaveName": "Arkham SCE - 4.9.0",
@@ -240,6 +241,6 @@
   "Table": "Table_None",
   "Tags": [],
   "Turns_path": "Turns.json",
-  "VersionNumber": "v14.2.1",
+  "VersionNumber": "v14.2.2",
   "XmlUI": "\u003cInclude src=\"Global/Global.xml\"/\u003e"
 }

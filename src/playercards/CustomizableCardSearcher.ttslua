@@ -1,0 +1,116 @@
+leftCardName = nil
+isUpgradeSheet = false
+local collidingCards = {}
+local xmlData = '<Panel width="800" height="200" position="0 0 0"><Text text="Hello World" width="800" height="200" fontSize="20" alignment="MiddleCenter" color="#FFFFFF" /></Panel>'
+
+local cardTemplateData = {
+	Name = "Johnny Any Card",
+	Nickname = "Johnny Any Card",
+	Description = "lorem ipsum\n\nHello, World",
+	GMNotes = JSON.encode({
+		id = "91d50b50-760b-4d9a-9e2d-35d7aafcc2b7",
+		type = "Asset",
+		classes = { "neutral" },
+		level = "0",
+		cost = "0",
+		icons = "Q",
+		health = "0",
+		sanity = "0",
+		slots = { "blank" },
+		name = "Johnny Any Card",
+		text = "lorem ipsum",
+		flavor_text = "Hello, World",
+		illustrator = "Sefina Rousseau",
+		subtitle = "Subtitle",
+		traits = "Item.",
+		victory = "Victory 0.",
+		illustration_pan_y = 1.0,
+		illustration_pan_x = 1.0,
+		illustration_scale = 3.0,
+		copyright = "© 2026",
+		collection_number = "123"
+	}),
+	CardID = 910000,
+	CustomDeck = {
+		["9100"] = {
+			BackIsHidden = false,
+			BackURL = "https://steamusercontent-a.akamaihd.net/ugc/2342503777940352139/A2D42E7E5C43D045D72CE5CFC907E4F886C8C690/",
+			FaceURL = "https://steamusercontent-a.akamaihd.net/ugc/16117711645597536014/1FA553BBA2E3704E55AB847839706DCECE97FEF3/",
+			NumHeight = 1,
+			NumWidth = 1,
+			Type = 0,
+			UniqueBack = false
+		}
+	},
+	Transform = {
+		posX = 0,
+		posY = 0,
+		posZ = 0,
+		rotX = 0,
+		rotY = 0,
+		rotZ = 0,
+		scaleX = 1,
+		scaleY = 1,
+		scaleZ = 1
+	},
+	Tags = { "PlayerCard" },
+	Snap = true,
+	Sticky = true
+}
+
+local function spawnGeneratedCard(card)
+	local NewCardposition = self.positionToWorld({ -1.0, 0, 0.191 })
+	local generatedCardData = card.getData()
+	if not generatedCardData then return end
+	generatedCardData.GUID = nil
+	generatedCardData.Nickname = cardTemplateData.Nickname
+	generatedCardData.Description = cardTemplateData.Description
+	generatedCardData.GMNotes = cardTemplateData.GMNotes
+	generatedCardData.XmlUI = xmlData
+	generatedCardData.Locked = false
+	generatedCardData.Snap = true
+	generatedCardData.Sticky = true
+	generatedCardData.Transform = generatedCardData.Transform or {}
+
+	Wait.frames(function()
+		spawnObjectData({
+			data = generatedCardData,
+			position = NewCardposition,
+			callback_function = function(newCard)
+    			newCard.UI.setXml(xmlData)
+			end
+		})
+	end, 1)
+end
+
+function onCollisionEnter(collisionInfo)
+	if not collisionInfo then return end
+	local card = collisionInfo.collision_object
+	if not card or card.type ~= "Card" then return end
+	if collidingCards[card] then return end
+	collidingCards[card] = true
+
+	local metadata = {}
+	local gotGMNotes, gmNotes = pcall(function()
+		return card.getGMNotes() or "{}"
+	end)
+	local decoded, decodedMetadata = gotGMNotes and pcall(JSON.decode, gmNotes)
+	if decoded and decodedMetadata then
+		metadata = decodedMetadata
+	end
+	isUpgradeSheet = metadata.type == "UpgradeSheet"
+
+	local gotName, cardName = pcall(function()
+		return card.getName()
+	end)
+	if not gotName or not cardName then return end
+	leftCardName = cardName:gsub("Upgrade Sheet", ""):match("^%s*(.-)%s*$")
+	if isUpgradeSheet then
+		spawnGeneratedCard(card)
+	end
+end
+
+function onCollisionExit(collisionInfo)
+	if not collisionInfo then return end
+	collidingCards[collisionInfo.collision_object] = nil
+end
