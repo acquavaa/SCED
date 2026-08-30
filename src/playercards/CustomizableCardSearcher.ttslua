@@ -1,116 +1,241 @@
-leftCardName = nil
+AdjCardName = nil
+FrontURL = nil
 isUpgradeSheet = false
+SearchCode = ""
 local collidingCards = {}
 local xmlData = '<Panel width="800" height="200" position="0 0 0"><Text text="Hello World" width="800" height="200" fontSize="20" alignment="MiddleCenter" color="#FFFFFF" /></Panel>'
+local SearchLib = require("util/SearchLib")
+local CardSpawner = require("playercards/CardSpawner")
+local AllCardsBagApi = require("playercards/AllCardsBagApi")
 
-local cardTemplateData = {
-	Name = "Johnny Any Card",
-	Nickname = "Johnny Any Card",
-	Description = "lorem ipsum\n\nHello, World",
-	GMNotes = JSON.encode({
-		id = "91d50b50-760b-4d9a-9e2d-35d7aafcc2b7",
-		type = "Asset",
-		classes = { "neutral" },
-		level = "0",
-		cost = "0",
-		icons = "Q",
-		health = "0",
-		sanity = "0",
-		slots = { "blank" },
-		name = "Johnny Any Card",
-		text = "lorem ipsum",
-		flavor_text = "Hello, World",
-		illustrator = "Sefina Rousseau",
-		subtitle = "Subtitle",
-		traits = "Item.",
-		victory = "Victory 0.",
-		illustration_pan_y = 1.0,
-		illustration_pan_x = 1.0,
-		illustration_scale = 3.0,
-		copyright = "© 2026",
-		collection_number = "123"
-	}),
-	CardID = 910000,
-	CustomDeck = {
-		["9100"] = {
-			BackIsHidden = false,
-			BackURL = "https://steamusercontent-a.akamaihd.net/ugc/2342503777940352139/A2D42E7E5C43D045D72CE5CFC907E4F886C8C690/",
-			FaceURL = "https://steamusercontent-a.akamaihd.net/ugc/16117711645597536014/1FA553BBA2E3704E55AB847839706DCECE97FEF3/",
-			NumHeight = 1,
-			NumWidth = 1,
-			Type = 0,
-			UniqueBack = false
-		}
-	},
-	Transform = {
-		posX = 0,
-		posY = 0,
-		posZ = 0,
-		rotX = 0,
-		rotY = 0,
-		rotZ = 0,
-		scaleX = 1,
-		scaleY = 1,
-		scaleZ = 1
-	},
-	Tags = { "PlayerCard" },
-	Snap = true,
-	Sticky = true
+local CARD_IMAGE_URLS = {
+	pocket_multi_tool = {
+		a = "https://steamusercontent-a.akamaihd.net/ugc/14472988867297229114/A418346932C3D306F27416CA71F24AD242303B53/",
+		ag = "https://steamusercontent-a.akamaihd.net/ugc/17627339620377474125/022F00C98BC95A9F3CA0B359F534DCFC2DAA3911/",
+		ae = "https://steamusercontent-a.akamaihd.net/ugc/13866793364495422743/DD2AE30ED4D0A2C4A4B5B177B30D7A9B3E0E8693/",
+		cf = "https://steamusercontent-a.akamaihd.net/ugc/16432951323927306475/4F919A20846A52931D6888C91F05FAD59CDE5165/",
+		adef = "https://steamusercontent-a.akamaihd.net/ugc/16525395114232525582/4D6B85340019AFA0E396FB0ED6B3D8D41A7ECB47/",
+		acfg = "https://steamusercontent-a.akamaihd.net/ugc/14759483062586321436/3E2A38C51421E76F0A7134459F0C3C75CF93A27B/",
+		abeg = "https://steamusercontent-a.akamaihd.net/ugc/9513085281566124086/20679D5AA0CA5277111F86E7BA715BA993A44C25/",
+		abdeg = "https://steamusercontent-a.akamaihd.net/ugc/18444423156800231374/EDCFFA15B4AC8C502067610F12D6B47884016892/",
+		b = "https://steamusercontent-a.akamaihd.net/ugc/13426626068329862866/C08EBD07E596B76DF5029CE7D218BBA41C0BC1F0/",
+		ac = "https://steamusercontent-a.akamaihd.net/ugc/14427187093852997990/010E7D46F4420E7689A9B84926E588EE466798C1/",
+		cdg = "https://steamusercontent-a.akamaihd.net/ugc/14829771229469565332/32E6960088C38DE308EA49AC4517C9C74C40F76B/",
+		cdeg = "https://steamusercontent-a.akamaihd.net/ugc/10935159642962883239/8B52A72F8E73DDD605B3B0D077D286F2850F7907/",
+		f = "https://steamusercontent-a.akamaihd.net/ugc/13195418426208572376/36D95D49D4877A2C55B16014CE30CE2890B88251/",
+		abef = "https://steamusercontent-a.akamaihd.net/ugc/15913776310174684038/0B640974A6ECD81FFE1438F3330223E331CF2476/",
+		ade = "https://steamusercontent-a.akamaihd.net/ugc/11073588236714446820/3C62F2D94CFC48277D72BE5530E744E29D9BC5DF/",
+		efg = "https://steamusercontent-a.akamaihd.net/ugc/13901679515022899629/80E2949CA861FD57FACB80655E0BA4CFBCF335D9/",
+		d = "https://steamusercontent-a.akamaihd.net/ugc/15330826905641257962/84DC5A9712ED007E3B33C2CA4956DF9323DDF0C5/",
+		abd = "https://steamusercontent-a.akamaihd.net/ugc/18286895636946509652/CECC18888197DD5D9BDEE5386A49206C36F26A85/",
+		g = "https://steamusercontent-a.akamaihd.net/ugc/15767312545846552934/5AF9637DE87C79D644954247C1B3B965D49DC143/",
+		abdg = "https://steamusercontent-a.akamaihd.net/ugc/9305859527445271189/5E4C5505335CF4ECA7ABB0F855DF5E4055E99F1F/",
+		bfg = "https://steamusercontent-a.akamaihd.net/ugc/14721072902966315186/E0525570986F4AE106AD99E8C50E44C9FC715784/",
+		cdef = "https://steamusercontent-a.akamaihd.net/ugc/13928746773092161069/C5CBFD315A6305D51F8AD7398C26346825B284B7/",
+		bg = "https://steamusercontent-a.akamaihd.net/ugc/16918494352205193701/CAA751D1C932BE325C3CBE73F2B73A868CEC7683/",
+		cde = "https://steamusercontent-a.akamaihd.net/ugc/14912048071601480450/A1CE350D69DC96E4427CD04AAA0D58EF4EC5BAF2/",
+		aef = "https://steamusercontent-a.akamaihd.net/ugc/15408903337421564846/AD74100E3C1C26A891B83028709E23EF57E49078/",
+		cg = "https://steamusercontent-a.akamaihd.net/ugc/12980220203167836393/72593AC4D6E75AE4718480EC6F91D29C29306143/",
+		be = "https://steamusercontent-a.akamaihd.net/ugc/15755666453257715038/D2934755C00245BD0E990E9A535BD6F602ECD253/",
+		eg = "https://steamusercontent-a.akamaihd.net/ugc/16730644409426394354/DB06DF2326071FD43C22CC62A2E3068052BE3484/",
+		bcde = "https://steamusercontent-a.akamaihd.net/ugc/17976455903927761925/5E7DAB295E5255F52BBAB825E9C372C8C8CB9063/",
+		bcdef = "https://steamusercontent-a.akamaihd.net/ugc/12835790276484137445/A8CD82DCE828A7E75C64BCAAEF8B1F3B68092E71/",
+		acf = "https://steamusercontent-a.akamaihd.net/ugc/13038930715696901712/126358708853521C24EF541C17D4B3281A7581B1/",
+		abceg = "https://steamusercontent-a.akamaihd.net/ugc/11717207347255096159/F8F65198271176A522DD90E2DA5135C094D5D193/",
+		acg = "https://steamusercontent-a.akamaihd.net/ugc/10420541828454245516/79F3139093CAE7952A613B869F45C29D02E20E3A/",
+		aceg = "https://steamusercontent-a.akamaihd.net/ugc/14447091621194316131/3A8DC0475D4CB992672F0B3DB70774F82400B4A7/",
+		bcd = "https://steamusercontent-a.akamaihd.net/ugc/17325996941610257841/4634E9347B7ABEB7B2FD79F3D3418D80B5C61BAD/",
+		bce = "https://steamusercontent-a.akamaihd.net/ugc/12189867773520649948/B96202CB316957306552E21E0342FEEADE5BDA86/",
+		bcf = "https://steamusercontent-a.akamaihd.net/ugc/16029414993423386639/3BD8BFA3C7EC090E203C2B188F952F6919BBF027/",
+		bde = "https://steamusercontent-a.akamaihd.net/ugc/13293538260313996665/F60561E47BDC664ECDC25062E17B7C248AF270E7/",
+		bdf = "https://steamusercontent-a.akamaihd.net/ugc/11757515441899166728/397438FFAB19BA90D7CA12480F2DE959CB67A380/",
+		bef = "https://steamusercontent-a.akamaihd.net/ugc/11847529730379969890/208C7A21C28ACF39B1471F7600E319E12ABA9894/",
+		bf = "https://steamusercontent-a.akamaihd.net/ugc/16248447108834560300/F84D8951A460DE24D06A4C9C9269F49DFC5625DE/",
+		abcde = "https://steamusercontent-a.akamaihd.net/ugc/10059794235546379387/D8A6C5252CB6B510D89641EC7C44966E4EF8A6FA/",
+		bcef = "https://steamusercontent-a.akamaihd.net/ugc/14836828737683261731/74F0D29CB6D6B52B90FBA56945D3F82451824F7F/",
+		bceg = "https://steamusercontent-a.akamaihd.net/ugc/12110249553877959659/F3219B6DDAEC9A643D2ABBB732403634AEE25663/",
+		bcg = "https://steamusercontent-a.akamaihd.net/ugc/15814791100454000703/6B2B443971E40C466701D365BE1F2A395A207B61/",
+		bcfg = "https://steamusercontent-a.akamaihd.net/ugc/10343566597464519709/8F2B3FF541EB523C0EBA4640EEBC17C4DDD7DA7E/",
+		acd = "https://steamusercontent-a.akamaihd.net/ugc/9461076077710283896/C4C3980DBBD0AA055EFED02277B916C104E7B255/",
+		abcdg = "https://steamusercontent-a.akamaihd.net/ugc/16694149125028821523/7D65F8C542047B0908C7E1A8A72A8A01D1876D9E/",
+		ace = "https://steamusercontent-a.akamaihd.net/ugc/17653931481006523834/9D020EB336707BA08E4C23B3270353808A95E311/",
+		abcef = "https://steamusercontent-a.akamaihd.net/ugc/13242046423863872331/20372F3E6DE0738AE72755D402C96C6820AB924C/",
+		de = "https://steamusercontent-a.akamaihd.net/ugc/12628787348293432996/824BD5655C0DF371E1CF86C3FF50C37CAAD0F501/",
+		abdf = "https://steamusercontent-a.akamaihd.net/ugc/17421690775472021511/26D3D51D8416A1C07A7659F35A837FE67925A356/",
+		bcdf = "https://steamusercontent-a.akamaihd.net/ugc/11314515658218817173/0CC5DE1CCBD6080F09DDC1BB76ED805BFC319A27/",
+		bcdg = "https://steamusercontent-a.akamaihd.net/ugc/17415539804178357418/92D5C817DE5B2D4032068E1ABB199A4DE124EE0F/",
+		adf = "https://steamusercontent-a.akamaihd.net/ugc/12288498316844761344/A87645A8A6983747C5BC09B69256DA9A7D05BC25/",
+		abdef = "https://steamusercontent-a.akamaihd.net/ugc/12591178052845349741/C092DF552BC809E2200BF7E0429B7BD1FE656FE8/",
+		afg = "https://steamusercontent-a.akamaihd.net/ugc/15600786537417211735/4CC03B269AC44BAFE54F80CB8CF0E25FCC97BD28/",
+		aefg = "https://steamusercontent-a.akamaihd.net/ugc/11893746351346601800/F43A83FC2BA16467B7E85D5EB8300411BA24BDBB/",
+		abc = "https://steamusercontent-a.akamaihd.net/ugc/13460886477262427760/1D1642B5219113528FE9F66EB44BEEAD64118847/",
+		e = "https://steamusercontent-a.akamaihd.net/ugc/15539309866677770909/26088FCFE5A07A11413EA5E4982282B41C20B627/",
+		abg = "https://steamusercontent-a.akamaihd.net/ugc/11213657082499366297/D8831E93B08AF25D693DEC968F5A044A5DD18E32/",
+		abcdf = "https://steamusercontent-a.akamaihd.net/ugc/16924463883965881566/478AEE352B17D13FC8D8835212CAA498F80B656C/",
+		c = "https://steamusercontent-a.akamaihd.net/ugc/9464346583014103690/0B8F77BB6CE63361BB2690523E186042AA53DBE7/",
+		abe = "https://steamusercontent-a.akamaihd.net/ugc/10796835669614396712/51B9C6A60A04EAF8E5932312EDAD8702D8C7B952/",
+		bdef = "https://steamusercontent-a.akamaihd.net/ugc/17492462814634064800/04B48F3B2BD9DE87D0529FCF46A62832074B271B/",
+		bdeg = "https://steamusercontent-a.akamaihd.net/ugc/17344306149948721523/C08EE08289364ED6FCE9B123F370F18B5555B985/",
+		ab = "https://steamusercontent-a.akamaihd.net/ugc/16848128694555627326/F6CD21EFE61922E73F2049E3C6E5DD69E32AD109/",
+		ad = "https://steamusercontent-a.akamaihd.net/ugc/17291709160782370994/767CE7F5F16B2BF479687CA5DCC559EBB322A7DC/",
+		af = "https://steamusercontent-a.akamaihd.net/ugc/12866528589022211292/D400E0B69EE8A6CB9CA9029B5C75F2E8A6C9A43D/",
+		df = "https://steamusercontent-a.akamaihd.net/ugc/13115658259849593211/A2B11F64F1914557E868F1BC3089BBBC73B176A7/",
+		abce = "https://steamusercontent-a.akamaihd.net/ugc/17322839185687238153/5BE2C375A94C7C7594B794E596C1A1389E2679F4/",
+		ceg = "https://steamusercontent-a.akamaihd.net/ugc/9506743061585836112/96C48B2B0BC752C8203C4080E522D6FE31585D61/",
+		acde = "https://steamusercontent-a.akamaihd.net/ugc/12857739516266058075/CAFA105A85D874E9563D4AA62BDB320CD63ABC91/",
+		abfg = "https://steamusercontent-a.akamaihd.net/ugc/18285916740022304550/E59D98A08E222D16F6817146991156096A079256/",
+		acef = "https://steamusercontent-a.akamaihd.net/ugc/17199462416120091605/34E41FF25EDB1D2755A83FAF6C6AD040CE1BAB72/",
+		acdg = "https://steamusercontent-a.akamaihd.net/ugc/13579639322475369961/F35287AC25F974ECED07926786BD2A9AC36071C0/",
+		beg = "https://steamusercontent-a.akamaihd.net/ugc/15717999117828755778/C7B1F6B4E57DE1A174166A6CF1A5E989BF44F3A1/",
+		befg = "https://steamusercontent-a.akamaihd.net/ugc/15051998851420268719/DD300CB52997685D628D44CC812C9121C442C09A/",
+		aeg = "https://steamusercontent-a.akamaihd.net/ugc/11627647754674174635/5800A6FA8179372808A728ABDD7AD7439351D2A2/",
+		adfg = "https://steamusercontent-a.akamaihd.net/ugc/15514230042898350128/EBF95463CA4C5042DDFAAA51DBBD56C87145A0A7/",
+		cef = "https://steamusercontent-a.akamaihd.net/ugc/13400539590339066425/81DBCF1E01EC3201139109E46C4500F78D185A1C/",
+		cfg = "https://steamusercontent-a.akamaihd.net/ugc/11931054057156035516/F293A4E366DCC27853510B7CDC78B320527F04A0/",
+		abde = "https://steamusercontent-a.akamaihd.net/ugc/17369736043508702935/8DC76F6576432DE299F09052D5111ED81AED58F9/",
+		deg = "https://steamusercontent-a.akamaihd.net/ugc/16932013457015958927/BDC1D0A53FAC3F1347C1FEFD4189D9C9483DF294/",
+		ce = "https://steamusercontent-a.akamaihd.net/ugc/11209075427649782337/057C86197FABE20E132F5B6C06D2BD7573EC70D5/",
+		abcg = "https://steamusercontent-a.akamaihd.net/ugc/13866244227688212299/9265AC1897221BE3FA4E210C79D6915D4A4A2CFD/",
+		abcd = "https://steamusercontent-a.akamaihd.net/ugc/16907468557148510003/5649D3B3DD7FBB20B6E589F28D28E320644C2CC2/",
+		def = "https://steamusercontent-a.akamaihd.net/ugc/9885629766097236208/FD19E1D8140194573FE0005EFAB2A04029CAE78C/",
+		bdg = "https://steamusercontent-a.akamaihd.net/ugc/13238420629543844088/C162313F8E70A9E3B699B7279E56E8306E1823B6/",
+		bdfg = "https://steamusercontent-a.akamaihd.net/ugc/10128778828296851860/59FA4BE3354D1267A29B42536306391094B16CCD/",
+		acdf = "https://steamusercontent-a.akamaihd.net/ugc/12456947298053480699/EF1228FA17A15712EC014D8769304D4CEFC70DB7/",
+		acdef = "https://steamusercontent-a.akamaihd.net/ugc/16914861544563800300/0EB0B14FB1254B0A5ECB4652D39D2DCFB7BACC6C/",
+		bc = "https://steamusercontent-a.akamaihd.net/ugc/14728338455043258591/19316B4CF8FE7947F1F5DDEB798EEB6E3C8E9B41/",
+		dg = "https://steamusercontent-a.akamaihd.net/ugc/11502422679420768538/089E0FDCB4CEC1B101D9ACBAD2EEA1EE908E77AC/",
+		abf = "https://steamusercontent-a.akamaihd.net/ugc/11981011981778950818/473D0956127CB14B40DA7320B066859AB3E11D85/",
+		fg = "https://steamusercontent-a.akamaihd.net/ugc/14012685906260342374/DB82806E967EADADB5E293607D60D2D5ED868923/",
+		cdf = "https://steamusercontent-a.akamaihd.net/ugc/10502573682911444601/D591119E488244C897857E608305DE60BDBBC120/",
+		dfg = "https://steamusercontent-a.akamaihd.net/ugc/12217839351030625052/52C07454F81C46917047BC94ADA7B988C0A5014D/",
+		cd = "https://steamusercontent-a.akamaihd.net/ugc/10687316598673664168/B010A037F089393C4FFDBD403C509C65F9C8E8D3/",
+		abcf = "https://steamusercontent-a.akamaihd.net/ugc/16713766250431159666/CBDCD268511D862D69EBFD4C8CB6F4D45C49B394/",
+		bd = "https://steamusercontent-a.akamaihd.net/ugc/17301632394425670554/95790E8B1C8DB7EB43A4BC21F2CDCCC7B8ABD11D/",
+		ef = "https://steamusercontent-a.akamaihd.net/ugc/11971068372695063713/14C0DF8C1B33A7BF53EFBA077659C19556F2CA1E/",
+		adg = "https://steamusercontent-a.akamaihd.net/ugc/12673214553293718811/3A07FE9B86DD3473493023C6078EDF6D4C346AD0/",
+		adeg = "https://steamusercontent-a.akamaihd.net/ugc/9994168785455726399/259593ED16A6725324D48C13F8F25E2094040998/"
+	}
 }
 
-local function spawnGeneratedCard(card)
-	local NewCardposition = self.positionToWorld({ -1.0, 0, 0.191 })
-	local generatedCardData = card.getData()
-	if not generatedCardData then return end
-	generatedCardData.GUID = nil
-	generatedCardData.Nickname = cardTemplateData.Nickname
-	generatedCardData.Description = cardTemplateData.Description
-	generatedCardData.GMNotes = cardTemplateData.GMNotes
-	generatedCardData.XmlUI = xmlData
-	generatedCardData.Locked = false
-	generatedCardData.Snap = true
-	generatedCardData.Sticky = true
-	generatedCardData.Transform = generatedCardData.Transform or {}
+local function logTable(tbl, indent)
+    indent = indent or 0
+    local spacing = string.rep("  ", indent) -- Creates visual nesting depth
 
-	Wait.frames(function()
-		spawnObjectData({
-			data = generatedCardData,
-			position = NewCardposition,
-			callback_function = function(newCard)
-    			newCard.UI.setXml(xmlData)
-			end
-		})
-	end, 1)
+    for key, value in pairs(tbl) do
+        if type(value) == "table" then
+            log(spacing .. tostring(key) .. ": [Table]")
+            logTable(value, indent + 1) -- Recursive call for the sub-table
+        else
+            log(spacing .. tostring(key) .. ": " .. tostring(value))
+        end
+    end
 end
 
-function onCollisionEnter(collisionInfo)
-	if not collisionInfo then return end
-	local card = collisionInfo.collision_object
-	if not card or card.type ~= "Card" then return end
-	if collidingCards[card] then return end
-	collidingCards[card] = true
-
-	local metadata = {}
-	local gotGMNotes, gmNotes = pcall(function()
-		return card.getGMNotes() or "{}"
-	end)
-	local decoded, decodedMetadata = gotGMNotes and pcall(JSON.decode, gmNotes)
-	if decoded and decodedMetadata then
-		metadata = decodedMetadata
+local function getSearchCode(upgradeSheet)
+	local searchCode = ""
+	local rowCount = upgradeSheet.call("getUpgradeRowCount") or 0
+	for row = 1, rowCount do
+		if upgradeSheet.call("isUpgradeActive", row) then
+			searchCode = searchCode .. string.char(string.byte("a") + row - 1)
+			log("searchCode: " .. searchCode)
+		end
 	end
+	log("searchCode: " .. searchCode)
+	return searchCode
+end
+
+local function getFrontURL(cardName, searchCode)
+	local cardImageUrls = CARD_IMAGE_URLS[cardName]
+	if not cardImageUrls then
+		local normalizedName = cardName:gsub("%s+", "_"):lower()
+		cardImageUrls = CARD_IMAGE_URLS[normalizedName]
+		log("Image URL: " .. (cardImageUrls[searchCode] or ""))
+	end
+
+	if not cardImageUrls then return nil end
+	return cardImageUrls[searchCode]
+end
+
+local function spawnAndReskinCard(cardId, upgradedCard, imageUrl)
+	-- Get the card from the bag
+	log("Card ID: " .. cardId)
+	local cardData = AllCardsBagApi.getCardById(cardId)
+
+	if not cardData then
+		printToAll("Card with ID '" .. cardId .. "' not found in the bag.", "Red")
+		return
+	end
+	
+	-- Check if we have a valid image URL before spawning
+	--if not imageUrl then
+	--	printToAll("No image URL found for card '" .. cardId .. "'.", "Yellow")
+	--	return
+	--end
+	
+	-- Spawn the card at the upgrade sheet's position
+	local pos = upgradedCard.positionToWorld(Vector(-4, 0, 0))
+	local rot = upgradedCard.getRotation()
+	
+	CardSpawner.spawnCards({ cardData }, pos, rot, false, function(spawnedCard)
+		-- After spawning, reskin the card with the selected upgrade 
+		spawnedCard.setCustomObject({
+			face = imageUrl
+		})
+
+	end)
+
+	if cardData and cardData ~= nil then
+		-- log("Card Data is there")
+		logTable(cardData, 0)
+	end
+end
+
+local function processUpgradeSheet(upgradeSheetCard)
+	local metadata = JSON.decode(upgradeSheetCard.getGMNotes()) or {}
 	isUpgradeSheet = metadata.type == "UpgradeSheet"
+	if not isUpgradeSheet then return end
 
 	local gotName, cardName = pcall(function()
-		return card.getName()
+		return upgradeSheetCard.getName()
 	end)
 	if not gotName or not cardName then return end
-	leftCardName = cardName:gsub("Upgrade Sheet", ""):match("^%s*(.-)%s*$")
-	if isUpgradeSheet then
-		spawnGeneratedCard(card)
+	AdjCardName = cardName:gsub("Upgrade Sheet", ""):match("^%s*(.-)%s*$")
+	SearchCode = getSearchCode(upgradeSheetCard)
+	FrontURL = getFrontURL(AdjCardName, SearchCode)
+	
+	-- Extract the base card ID from the upgrade sheet metadata (remove "-c" suffix)
+	if metadata.id and string.sub(metadata.id, -2) == "-c" then
+		local baseCardId = string.sub(metadata.id, 1, -3)
+		spawnAndReskinCard(baseCardId, upgradeSheetCard, FrontURL)
 	end
 end
 
-function onCollisionExit(collisionInfo)
-	if not collisionInfo then return end
-	collidingCards[collisionInfo.collision_object] = nil
+function onLoad()
+  self.createButton({
+    click_function = "onClick_Reskin",
+    function_owner = self,
+    label          = "Update card",
+    tooltip        = "Replace the Level 0 card with the appropriate upgraded card",
+	position       = { x = 0, y = 0.12, z = -0.8 },
+    font_size      = 200,
+    width          = 1200,
+    height         = 300,
+    scale          = { 0.5, 1, 0.5 }
+  })
 end
+
+function onClick_Reskin()
+	local foundSheets = false
+	for _, card in ipairs(SearchLib.onObject(self, "isCard")) do
+		local metadata = JSON.decode(card.getGMNotes()) or {}
+		if metadata.type == "UpgradeSheet" then
+			foundSheets = true
+			processUpgradeSheet(card)
+		end
+	end
+	
+	if not foundSheets then
+		printToAll("No upgrade sheets found on object.", "Yellow")
+	end
+end
+

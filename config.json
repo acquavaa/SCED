@@ -3,6 +3,7 @@
   "ComponentTags_path": "ComponentTags.json",
   "CustomUIAssets_path": "CustomUIAssets.json",
   "DecalPallet": [],
+  "Decals": [],
   "GameComplexity": "",
   "GameMode": "Arkham Horror LCG - Super Complete Edition",
   "GameType": "",
@@ -230,7 +231,8 @@
     "FilmFatale.45e513",
     "Core2026BrethrenofAsh.elokoss",
     "ChildrenofBlood.63b531",
-    "CustomizableCardSearcher.8c1b75"
+    "CustomizableCardSearcher.8c1b75",
+    "PocketMultiToolUpgradeSheet.09edbf"
   ],
   "PlayArea": 1,
   "SaveName": "Arkham SCE - 4.9.0",

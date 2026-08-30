@@ -73,6 +73,10 @@ function getSelfId()
   return metadata.id
 end
 
+function getUpgradeRowCount()
+  return customizations and #customizations or 0
+end
+
 function isUpgradeActive(row)
   return customizations[row] ~= nil
       and customizations[row].checkboxes ~= nil
