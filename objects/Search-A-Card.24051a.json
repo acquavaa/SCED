@@ -34,7 +34,7 @@
   "LayoutGroupSortIndex": 0,
   "Locked": true,
   "LuaScript": "require(\"playercards/Search-A-Card\")",
-  "LuaScriptState": "{\"noLimit\":false,\"searchExact\":false,\"spawnAll\":false,\"value\":\"\"}",
+  "LuaScriptState": "{\"noLimit\":false,\"searchExact\":false,\"spawnAll\":false,\"value\":\"multi tool\"}",
   "MeasureMovement": false,
   "Name": "Custom_Tile",
   "Nickname": "Search-A-Card",
@@ -52,5 +52,6 @@
     "scaleY": 1,
     "scaleZ": 4.5
   },
-  "Value": 0
+  "Value": 0,
+  "XmlUI": ""
 }

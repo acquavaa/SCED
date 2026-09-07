@@ -424,5 +424,6 @@
     "scaleY": 1,
     "scaleZ": 6.43
   },
-  "Value": 0
+  "Value": 0,
+  "XmlUI": ""
 }
