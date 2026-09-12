@@ -134,7 +134,6 @@
     "PhaseTrackerCache.645841",
     "TokenSource.124381",
     "GameData.3dbe47",
-    "SCEDTour.0e5aa8",
     "DeckInstructionGenerator.240522",
     "PlayerCards.2d30ee",
     "TokenRemover.39b175",
@@ -230,8 +229,11 @@
     "FilmFatale.45e513",
     "Core2026BrethrenofAsh.elokoss",
     "ChildrenofBlood.63b531",
+    "SummonedServitorUpgradeSheet.7dadf9",
+    "SummonedServitor.a2e9b4",
+    "PocketMultiToolUpgradeSheet.09edbf",
     "CustomizableCardSearcher.8c1b75",
-    "Deck.43efd6"
+    "PocketMultiTool.f49a6a"
   ],
   "PlayArea": 1,
   "SaveName": "Arkham SCE - 4.9.0",

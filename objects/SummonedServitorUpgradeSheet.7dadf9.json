@@ -1,0 +1,137 @@
+{
+  "AltLookAngle": {
+    "x": 0,
+    "y": 0,
+    "z": 0
+  },
+  "AttachedVectorLines": [
+    {
+      "OwnerSteamID": 0,
+      "color": {
+        "a": 0.75,
+        "b": 0.5,
+        "g": 0.5,
+        "r": 0.5
+      },
+      "points3": [
+        {
+          "x": 0.28,
+          "y": 0.25,
+          "z": 0.7
+        },
+        {
+          "x": 0.04,
+          "y": 0.25,
+          "z": 0.7
+        },
+        {
+          "x": 0.04,
+          "y": 0.25,
+          "z": 0.6
+        },
+        {
+          "x": 0.28,
+          "y": 0.25,
+          "z": 0.6
+        },
+        {
+          "x": 0.28,
+          "y": 0.25,
+          "z": 0.7
+        }
+      ],
+      "thickness": 0.02
+    },
+    {
+      "OwnerSteamID": 0,
+      "color": {
+        "a": 0.75,
+        "b": 0.5,
+        "g": 0.5,
+        "r": 0.5
+      },
+      "points3": [
+        {
+          "x": -0.003,
+          "y": 0.25,
+          "z": 0.7
+        },
+        {
+          "x": -0.143,
+          "y": 0.25,
+          "z": 0.7
+        },
+        {
+          "x": -0.143,
+          "y": 0.25,
+          "z": 0.6
+        },
+        {
+          "x": -0.003,
+          "y": 0.25,
+          "z": 0.6
+        },
+        {
+          "x": -0.003,
+          "y": 0.25,
+          "z": 0.7
+        }
+      ],
+      "thickness": 0.02
+    }
+  ],
+  "Autoraise": true,
+  "CardID": 847400,
+  "ColorDiffuse": {
+    "b": 0.71324,
+    "g": 0.71324,
+    "r": 0.71324
+  },
+  "CustomDeck": {
+    "8474": {
+      "BackIsHidden": true,
+      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1814412497119682452/BD224FCE1980DBA38E5A687FABFD146AA1A30D0E/",
+      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12062136678713531238/FD70778F67481E211B77D9749FF8AAFA76675096/",
+      "NumHeight": 1,
+      "NumWidth": 1,
+      "Type": 0,
+      "UniqueBack": false
+    }
+  },
+  "Description": "",
+  "DragSelectable": true,
+  "GMNotes": "{\n  \"id\": \"09080-c\",\n  \"type\": \"UpgradeSheet\",\n  \"cycle\": \"The Scarlet Keys\"\n}",
+  "GUID": "7dadf9",
+  "Grid": true,
+  "GridProjection": false,
+  "Hands": false,
+  "HideWhenFaceDown": true,
+  "IgnoreFoW": false,
+  "LayoutGroupSortIndex": 0,
+  "Locked": false,
+  "LuaScript": "require(\"playercards/customizable/SummonedServitorUpgradeSheet\")",
+  "LuaScriptState": "{\"selections\":[{\"xp\":1}]}",
+  "MeasureMovement": false,
+  "Name": "CardCustom",
+  "Nickname": "Summoned Servitor Upgrade Sheet",
+  "SidewaysCard": false,
+  "Snap": true,
+  "Sticky": true,
+  "Tags": [
+    "PlayerCard"
+  ],
+  "Tooltip": true,
+  "Transform": {
+    "posX": 40.168,
+    "posY": 1.495,
+    "posZ": 24.349,
+    "rotX": 0,
+    "rotY": 270,
+    "rotZ": 0,
+    "scaleX": 1,
+    "scaleY": 1,
+    "scaleZ": 1
+  },
+  "Value": 0,
+  "XmlUI": ""
+}

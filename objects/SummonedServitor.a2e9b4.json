@@ -5,16 +5,12 @@
     "z": 0
   },
   "Autoraise": true,
+  "CardID": 379104,
   "ColorDiffuse": {
     "b": 0.71324,
     "g": 0.71324,
     "r": 0.71324
   },
-  "ContainedObjects_order": [
-    "PocketMultiToolUpgradeSheet.09edbf",
-    "PocketMultiTool.f49a6a"
-  ],
-  "ContainedObjects_path": "Deck.43efd6",
   "CustomDeck": {
     "3791": {
       "BackIsHidden": true,
@@ -24,28 +20,15 @@
       "NumWidth": 9,
       "Type": 0,
       "UniqueBack": false
-    },
-    "8476": {
-      "BackIsHidden": true,
-      "BackURL": "https://steamusercontent-a.akamaihd.net/ugc/1814412497119682452/BD224FCE1980DBA38E5A687FABFD146AA1A30D0E/",
-      "FaceURL": "https://steamusercontent-a.akamaihd.net/ugc/12006981213907369696/F51E46E44EC65DEB7FEDE4BA5D54B073FBD4FBE6/",
-      "NumHeight": 1,
-      "NumWidth": 1,
-      "Type": 0,
-      "UniqueBack": false
     }
   },
-  "DeckIDs": [
-    847600,
-    379123
-  ],
   "Description": "",
   "DragSelectable": true,
-  "GMNotes": "",
-  "GUID": "43efd6",
+  "GMNotes_path": "SummonedServitor.a2e9b4.gmnotes",
+  "GUID": "a2e9b4",
   "Grid": true,
   "GridProjection": false,
-  "Hands": false,
+  "Hands": true,
   "HideWhenFaceDown": true,
   "IgnoreFoW": false,
   "LayoutGroupSortIndex": 0,
@@ -53,19 +36,20 @@
   "LuaScript": "",
   "LuaScriptState": "",
   "MeasureMovement": false,
-  "Name": "Deck",
-  "Nickname": "",
+  "Name": "Card",
+  "Nickname": "Summoned Servitor",
   "SidewaysCard": false,
   "Snap": true,
   "Sticky": true,
   "Tags": [
+    "Asset",
     "PlayerCard"
   ],
   "Tooltip": true,
   "Transform": {
-    "posX": 34.064,
-    "posY": 1.512,
-    "posZ": 28.257,
+    "posX": 39.992,
+    "posY": 1.495,
+    "posZ": 27.477,
     "rotX": 0,
     "rotY": 270,
     "rotZ": 0,

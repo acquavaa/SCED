@@ -1,5 +1,4 @@
 FrontURL = nil
-isUpgradeSheet = false
 
 local xmlData = '<Panel width="800" height="200" position="0 0 0"><Text text="Hello World" width="800" height="200" fontSize="20" alignment="MiddleCenter" color="#FFFFFF" /></Panel>'
 local SearchLib = require("util/SearchLib")
@@ -1187,7 +1186,7 @@ local CARD_IMAGE_URLS = {
 		g = "https://steamusercontent-a.akamaihd.net/ugc/14427406794910288900/0289F527A567398C04CCC4B55940EBD450F5D969/",
 	},
 
-	["09081"] = {
+	["09081-t"] = {
 		abcdeh = "https://steamusercontent-a.akamaihd.net/ugc/17786619156333230079/20F18CC5E21C4650B2B9FC410B81885FDAFE4A5C/",
 		abcdfh = "https://steamusercontent-a.akamaihd.net/ugc/17742442224989830998/1D8B3E838380A1E520D23B5C00DD8F2B1E7D9C5E/",
 		abcdgh = "https://steamusercontent-a.akamaihd.net/ugc/10521824126639882362/654D1F04B544540C7EF676CFE344F043C0447C3D/",
@@ -2112,6 +2111,7 @@ local CARD_IMAGE_URLS = {
 	}
 }
 
+--Finds the correct front card url based on the search code it receives.
 local function getFrontURL(cardMetadataID, searchCode)
 	local cardImageUrls = CARD_IMAGE_URLS[cardMetadataID]
 	if not cardImageUrls then return nil end
@@ -2134,45 +2134,84 @@ function onLoad()
   })
 end
 
+--Special handling for Summoned Servitor's slot-drop option.
+function summonedServitorSlotHandling(servitorUpgradeCard, currentSearchCode)
+	log("Servitor Handling triggered")
+
+	local scriptData = JSON.decode(servitorUpgradeCard.script_state or "") or {}
+	local selections = scriptData.selections or {}
+	local chosenSlot = selections[6] and selections[6].text or ""
+
+	if chosenSlot == "0" then
+		-- Arcane selected, so use the card image with Ally removed.
+		currentSearchCode = currentSearchCode .. "noally"
+	elseif chosenSlot == "1" then
+		-- Ally selected, so use the card image with Arcane removed.
+		currentSearchCode = currentSearchCode .. "noarcane"
+	end
+	return currentSearchCode
+end
+
+--Function to execute the change to the card's face
+function cardFaceChanger(FrontURL, baseCard)
+	local baseCardData = baseCard.getData()
+	local deckId, customDeckData = next(baseCardData.CustomDeck)
+	customDeckData.NumWidth = 1
+	customDeckData.NumHeight = 1
+	if FrontURL ~= nil then
+		customDeckData.FaceURL = FrontURL
+		-- log("New URL: " .. customDeckData.FaceURL)
+	end
+	-- add the custom deck data to the card data
+	baseCardData.CustomDeck = { [deckId] = customDeckData }
+
+	-- destroy the original and respawn it
+	baseCard.destruct()
+	spawnObjectData({data = baseCardData})
+end
+
+--Function runs when both base player card and its upgrade sheet are found.
+--Reads the active customizations, finds the correct new card face, and applies it to the card.
+function updateBaseCard(upgradeSheet, basePlayerCard, upgradeSheetMetadata, basePlayerCardMetadata)
+	--log("Found Card ID: " .. basePlayerCardMetadata.id)
+	local searchCode = ""
+	for i, customizations in ipairs(basePlayerCardMetadata.customizations) do
+		if upgradeSheet.call("isUpgradeActive", i) then
+			searchCode = searchCode .. string.char(string.byte("a") + i - 1)
+		end
+	end
+	-- Special handling for Summoned Servitor with the Dominance upgrade.
+	if basePlayerCardMetadata.id == "09080" and string.find(searchCode, "f", 1, true) then
+		searchCode = summonedServitorSlotHandling(upgradeSheet, searchCode)
+	end
+	log("searchCode: " .. searchCode)
+	
+	--Change the front URL
+	FrontURL = getFrontURL(basePlayerCardMetadata.id, searchCode)
+	cardFaceChanger(FrontURL, basePlayerCard)
+end
+
 function onClick_Process()
 	local foundSheets = false
-	--loop through the cards on the card searcher object
+	--loop through the cards on the card searcher object, 
+	--first finding an upgrade sheet, then looking for the the corresponding base card.
 	for _, card in ipairs(SearchLib.onObject(self, "isCard")) do
 		local UpgradeSheetMetadata = JSON.decode(card.getGMNotes()) or {}
 		if UpgradeSheetMetadata.type == "UpgradeSheet" then
 			foundSheets = true
+
+			--Found an upgrade sheet, now find its base card.
 			for _, baseCard in ipairs(SearchLib.onObject(self, "isCard")) do
-				local searchCode = ""
 				local baseCardMetadata = JSON.decode(baseCard.getGMNotes()) or {}
+
+				--Special handling for Emp. Hypo because there's a taboo of the base card but not the upgrade sheet.
+				if baseCardMetadata.id == "09041-t" then	
+					baseCardMetadata.id = "09041"
+				end
+
+				--If both base card and its upgrade sheet are found, execute the replacement code.
 				if UpgradeSheetMetadata.id == (baseCardMetadata.id .. "-c") then
-					log("Found Card ID: " .. baseCardMetadata.id)
-					for i, customizations in ipairs(baseCardMetadata.customizations) do
-						if card.call("isUpgradeActive", i) then
-							searchCode = searchCode .. string.char(string.byte("a") + i - 1)
-							--Special handling for Summoned Servitor
-							if baseCardMetadata.id == "09080" then
-
-							end
-						end
-					end
-					log("searchCode: " .. searchCode)
-					
-					--Change the front URL
-					FrontURL = getFrontURL(baseCardMetadata.id, searchCode)
-					local baseCardData = baseCard.getData()
-					local deckId, customDeckData = next(baseCardData.CustomDeck)
-					customDeckData.NumWidth = 1
-					customDeckData.NumHeight = 1
-					if FrontURL ~= nil then
-						customDeckData.FaceURL = FrontURL
-						-- log("New URL: " .. customDeckData.FaceURL)
-					end
-					-- add the custom deck data to the card data
-					baseCardData.CustomDeck = { [deckId] = customDeckData }
-
-					-- destroy the original and respawn it
-					baseCard.destruct()
-					spawnObjectData({data = baseCardData})
+					updateBaseCard(card, baseCard, UpgradeSheetMetadata, baseCardMetadata)
 				end
 			end
 		end
@@ -2182,4 +2221,3 @@ function onClick_Process()
 		printToAll("No upgrade sheets found on object.", "Yellow")
 	end
 end
-

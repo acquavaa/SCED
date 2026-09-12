@@ -42,7 +42,7 @@
     },
     "ImageScalar": 1,
     "ImageSecondaryURL": "",
-    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/15010725767839775930/8DE53AE2843BCB8DD5C31CB05A5B939818FA0A19/",
+    "ImageURL": "https://steamusercontent-a.akamaihd.net/ugc/10577701098122332586/EB3FA1B652E9B81B1B483FE195B417AC16717F8F/",
     "WidthScale": 0
   },
   "Description": "Place the customizable checklist with the upgrades checked and the object spawns the corresponding card that shows those upgrades on the card itself",
@@ -65,9 +65,9 @@
   "Sticky": true,
   "Tooltip": true,
   "Transform": {
-    "posX": 33.597,
+    "posX": 36.476,
     "posY": 1.581,
-    "posZ": 16.624,
+    "posZ": 16.181,
     "rotX": 0,
     "rotY": 270,
     "rotZ": 0,
