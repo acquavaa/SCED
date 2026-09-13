@@ -63,11 +63,14 @@
   "Nickname": "Customizable Card Searcher",
   "Snap": true,
   "Sticky": true,
+  "Tags": [
+    "CardReplacer"
+  ],
   "Tooltip": true,
   "Transform": {
-    "posX": 36.476,
+    "posX": 36.728,
     "posY": 1.581,
-    "posZ": 16.181,
+    "posZ": 16.077,
     "rotX": 0,
     "rotY": 270,
     "rotZ": 0,

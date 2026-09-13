@@ -1,6 +1,9 @@
-FrontURL = nil
+------------------------------------------------------------
+-- Author: Drew542 
+-- Last modified: September 2026 
+------------------------------------------------------------
 
-local xmlData = '<Panel width="800" height="200" position="0 0 0"><Text text="Hello World" width="800" height="200" fontSize="20" alignment="MiddleCenter" color="#FFFFFF" /></Panel>'
+FrontURL = nil
 local SearchLib = require("util/SearchLib")
 
 local CARD_IMAGE_URLS = {
@@ -2132,7 +2135,6 @@ local function getFrontURL(cardMetadataID, searchCode)
 	local cardImageUrls = CARD_IMAGE_URLS[cardMetadataID]
 	if not cardImageUrls then return nil end
 	if not cardImageUrls[searchCode] then return nil end
-	-- log("Image URL: " .. (cardImageUrls[searchCode] or ""))
 	return cardImageUrls[searchCode]
 end
 
@@ -2152,8 +2154,6 @@ end
 
 --Special handling for Summoned Servitor's slot-drop option.
 function summonedServitorSlotHandling(servitorUpgradeCard, currentSearchCode)
-	log("Servitor Handling triggered")
-
 	local scriptData = JSON.decode(servitorUpgradeCard.script_state or "") or {}
 	local selections = scriptData.selections or {}
 	local chosenSlot = selections[6] and selections[6].text or ""
@@ -2174,9 +2174,12 @@ function cardFaceChanger(FrontURL, baseCard)
 	local deckId, customDeckData = next(baseCardData.CustomDeck)
 	customDeckData.NumWidth = 1
 	customDeckData.NumHeight = 1
+
+	--If the card's face url already matches the target, don't make the swap, and don't destory and recreate the card.
+	if customDeckData.FaceURL == FrontURL then return end
+
 	if FrontURL ~= nil then
 		customDeckData.FaceURL = FrontURL
-		-- log("New URL: " .. customDeckData.FaceURL)
 	end
 	-- add the custom deck data to the card data
 	baseCardData.CustomDeck = { [deckId] = customDeckData }
@@ -2188,12 +2191,21 @@ end
 
 --Function runs when both base player card and its upgrade sheet are found.
 --Reads the active customizations, finds the correct new card face, and applies it to the card.
-function updateBaseCard(upgradeSheet, basePlayerCard, upgradeSheetMetadata, basePlayerCardMetadata)
-	--log("Found Card ID: " .. basePlayerCardMetadata.id)
+function updateCardImage(upgradeInfo)
+	--log("updateCardImage function is running")
+	local basePlayerCard = upgradeInfo.card
+	local basePlayerCardMetadata = upgradeInfo.metadata
+	local upgradeSheet = upgradeInfo.upgradeSheet
+
+	if not basePlayerCardMetadata or not upgradeSheet or not basePlayerCardMetadata.customizations then
+		log("updateCardImage missing required data")
+		return
+	end
+
 	local searchCode = ""
-	for i=1, upgradeSheet.call("getUpgradeRowCount") do
+	--Build searchCode by iterating through the upgrades and checking which are active.
+	for i = 1, #basePlayerCardMetadata.customizations do
 		if upgradeSheet.call("isUpgradeActive", i) then
-			log("Upgrade " .. i .. " is active.")
 			--Special handling for Grizzled, Raven Quill, FiLP, and Living Ink because their upgrade sheets
 			--have a table entry for trait/skill which pushes the searchCode matching off by one line.
 			if basePlayerCardMetadata.id == "09101" or basePlayerCardMetadata.id == "09042" or 
@@ -2202,10 +2214,9 @@ function updateBaseCard(upgradeSheet, basePlayerCard, upgradeSheetMetadata, base
 			else
 				searchCode = searchCode .. string.char(string.byte("a") + i - 1)
 			end
-		else
-			log("Upgrade " .. i .. " is not active.")
 		end
 	end
+
 	-- Special handling for Summoned Servitor with the Dominance upgrade.
 	if basePlayerCardMetadata.id == "09080" and string.find(searchCode, "f", 1, true) then
 		searchCode = summonedServitorSlotHandling(upgradeSheet, searchCode)
@@ -2231,15 +2242,15 @@ function onClick_Process()
 			--Found an upgrade sheet, now find its base card.
 			for _, baseCard in ipairs(SearchLib.onObject(self, "isCard")) do
 				local baseCardMetadata = JSON.decode(baseCard.getGMNotes()) or {}
-
+					
 				--Special handling for Emp. Hypo because there's a taboo of the base card but not the upgrade sheet.
 				if baseCardMetadata.id == "09041-t" then	
 					baseCardMetadata.id = "09041"
 				end
-
-				--If both base card and its upgrade sheet are found, execute the replacement code.
+				
+				--If the metadata for the base card and upgrade card match, proceed with the card image swap
 				if UpgradeSheetMetadata.id == (baseCardMetadata.id .. "-c") then
-					updateBaseCard(card, baseCard, UpgradeSheetMetadata, baseCardMetadata)
+					updateCardImage({card = baseCard, metadata = baseCardMetadata, upgradeSheet = card})
 				end
 			end
 		end
